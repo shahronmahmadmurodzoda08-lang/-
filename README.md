@@ -1,20 +1,40 @@
-# 📚 Фарҳангшиносӣ — Book App
+# Фарҳангшиносӣ — Logo/Icon Pack
 
-Китоби офлайнӣ бо 251 саҳифа, ки саҳифаҳои PDF ҳамчун варақҳои китоб дар дохили APK ҷойгир шудаанд.
+Манбаи лого: муқоваи пешниҳодкардаи корбар.
 
-## Имкониятҳо
-- муқоваи китоб аз расми пешниҳодшуда;
-- профили китоб;
-- 251 саҳифа;
-- swipe;
-- zoom;
-- Пешина / Баъдӣ;
-- гузаштан ба рақами саҳифа;
-- бе интернет хондан.
+## 1) Агар Flutter истифода мебарӣ
+Дар `pubspec.yaml` dependency-и `flutter_launcher_icons`-ро илова кун ва блоки
+`flutter_launcher_icons`-ро аз `flutter_launcher_icons.yaml` ба конфиг мувофиқ гузор.
+Баъд:
 
-## Сохтани APK дар GitHub
-1. Файлҳои ZIP-ро ба repository гузор.
-2. Ба **Actions** даро.
-3. **Build Android APK**-ро интихоб кун.
-4. **Run workflow**-ро пахш кун.
-5. Баъд аз build, аз **Artifacts** файли `farhangshinos-book-apk`-ро гир.
+```bash
+flutter pub get
+dart run flutter_launcher_icons
+```
+
+## 2) Генератори мустақил
+Python + Pillow:
+
+```bash
+pip install pillow
+python tools/generate_icons.py
+```
+
+Он icon-ҳои Android, iOS ва Windows-ро месозад.
+
+## Номи барнома
+Номи намоёни барнома: **Фарҳангшиносӣ**
+
+Барои Flutter:
+```yaml
+name: farhangshinos_book
+```
+
+Android:
+`android/app/src/main/AndroidManifest.xml` -> `android:label="Фарҳангшиносӣ"`
+
+iOS:
+`CFBundleDisplayName` -> `Фарҳангшиносӣ`
+
+Windows:
+`windows/runner/Runner.rc` -> номи маҳсулотро ба `Фарҳангшиносӣ` иваз кун.
