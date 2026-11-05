@@ -1,269 +1,127 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 
-void main() {
-  runApp(const FarhangshinosApp());
+void main() => runApp(const BooksApp());
+const green = Color(0xFF244D3A), paper = Color(0xFFF5F0E5);
+class BooksApp extends StatelessWidget {
+ const BooksApp({super.key});
+ @override Widget build(BuildContext context) => MaterialApp(debugShowCheckedModeBanner:false,title:'BOOKS',theme:ThemeData(useMaterial3:true,colorScheme:ColorScheme.fromSeed(seedColor:green),scaffoldBackgroundColor:paper),home:const LibraryScreen());
 }
-
-class FarhangshinosApp extends StatelessWidget {
-  const FarhangshinosApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Фарҳангшиносӣ',
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFF4F1E8),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF315A3A),
-        ),
-      ),
-      home: const BookHome(),
-    );
-  }
+class Lesson {
+ final String title,group,rule,example,task;
+ const Lesson(this.title,this.group,this.rule,this.example,this.task);
 }
-
-class BookHome extends StatelessWidget {
-  const BookHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 24),
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(22),
-                  child: Image.asset(
-                    'assets/cover.png',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                const Text(
-                  'ФАРҲАНГШИНОСӢ',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 7),
-                const Text(
-                  'Н. Тоҷов • К. Ҳусейнов • Р. Назаров • М. Тоҷев',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.black54,
-                  ),
-                ),
-                const SizedBox(height: 18),
-                FilledButton.icon(
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(54),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ReaderScreen(),
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.menu_book_rounded),
-                  label: const Text(
-                    'ХОНДАНИ КИТОБ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  '251 саҳифа • офлайн • zoom • swipe',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+const pythonLessons=<Lesson>[
+ Lesson('Python чист?','Асосҳо','Python забони барномасозии сатҳи баланд аст. Код аз боло ба поён иҷро мешавад.','print("Салом, ҷаҳон!")','Барнома навис, ки номи худро чоп кунад.'),
+ Lesson('Тағйирёбандаҳо','Асосҳо','Тағйирёбанда маълумотро нигоҳ медорад.','name = "Ali"\nage = 18\nprint(name, age)','Тағйирёбандаи city соз.'),
+ Lesson('Навъҳои маълумот','Асосҳо','int — бутун; float — касрӣ; str — матн; bool — True ё False.','age = 20\nprice = 12.5\nname = "Python"\nactive = True','Барои ҳар чор навъ тағйирёбанда соз.'),
+ Lesson('Амалиётҳои математикӣ','Асосҳо','+ ҷамъ, - тарҳ, * зарб, / тақсим, // тақсими бутун, % бақия, ** дараҷа.','a, b = 17, 5\nprint(a // b)\nprint(a % b)','Бақияи тақсими 29 ба 4-ро ҳисоб кун.'),
+ Lesson('Шартҳои if / else','Идоракунӣ','Шарт иҷрои кодро вобаста ба True ё False интихоб мекунад.','score = 75\nif score >= 50:\n    print("Гузашт")\nelse:\n    print("Нагузашт")','Мусбат ё манфӣ будани ададро муайян кун.'),
+ Lesson('Даври for','Даврҳо','for барои гузаштан аз рӯйи пайдарпайӣ истифода мешавад. range(5) 0 то 4 медиҳад.','for i in range(1, 6):\n    print(i)','Ададҳои аз 1 то 10-ро чоп кун.'),
+ Lesson('Даври while','Даврҳо','while то вақте ки шарт True аст такрор мешавад.','n = 3\nwhile n > 0:\n    print(n)\n    n -= 1','Бо while ададҳои 1 то 5-ро чоп кун.'),
+ Lesson('Функсияҳо','Функсияҳо','def функсия месозад, return натиҷаро бармегардонад.','def add(a, b):\n    return a + b\n\nprint(add(4, 6))','Функсияи square соз, ки квадрати ададро баргардонад.'),
+ Lesson('Рӯйхатҳо (list)','Маҷмӯаҳо','Рӯйхат якчанд қиматро нигоҳ медорад. Индекс аз 0 сар мешавад. append() илова мекунад.','numbers = [2, 4, 6]\nnumbers.append(8)\nprint(numbers[0])','Рӯйхати 5 ном соз.'),
+ Lesson('Tuple ва Set','Маҷмӯаҳо','tuple тағйирнопазир аст. set қиматҳои такрорнашавандаро нигоҳ медорад.','point = (3, 4)\nunique = {1, 2, 2, 3}','Аз [1,1,2,3,3] маҷмӯи бе такрор соз.'),
+ Lesson('Луғатҳо (dict)','Маҷмӯаҳо','dict маълумотро бо ҷуфти калид ва қимат нигоҳ медорад.','student = {"name": "Ali", "age": 19}\nprint(student["name"])','Луғати мошин бо brand ва year соз.'),
+ Lesson('Сатрҳо (str)','Маълумот','len() дарозӣ, lower() ҳарфҳои хурд ва upper() ҳарфҳои калон медиҳад.','word = "Python"\nprint(len(word))\nprint(word.upper())','Калимаи худро ба ҳарфҳои калон табдил деҳ.'),
+ Lesson('Файлҳо','Амалӣ','open() файлро мекушояд. with онро баъди истифода мебандад.','with open("note.txt", "w", encoding="utf-8") as f:\n    f.write("Салом")','Матнро ба файли note.txt навис.'),
+ Lesson('Хатогиҳо','Амалӣ','try/except хатогиҳои вақти иҷроишро коркард мекунад.','try:\n    n = int(input("Адад: "))\n    print(10 / n)\nexcept (ValueError, ZeroDivisionError):\n    print("Вуруди нодуруст")','Вуруди ададро бехатар санҷ.'),
+ Lesson('Синфҳо ва объектҳо','ООП','class қолаби объект аст. __init__ ҳангоми сохтани объект иҷро мешавад.','class Car:\n    def __init__(self, brand):\n        self.brand = brand\n\ncar = Car("Toyota")','Синфи Book бо title соз.')
+];
+const cultureLessons=<Lesson>[
+ Lesson('Мафҳуми фарҳанг','Асосҳо','Фарҳанг маҷмӯи арзишҳои моддӣ ва маънавӣ, дониш ва меъёрҳои ҷомеа мебошад.','Моддӣ: бино, асбоб. Маънавӣ: илм, санъат, забон.','Ду намунаи фарҳанги моддӣ ва маънавиро навис.'),
+ Lesson('Фарҳанги моддӣ ва маънавӣ','Навъҳо','Фарҳанги моддӣ бо ашё; фарҳанги маънавӣ бо ғоя, дониш ва арзишҳо алоқаманд аст.','Осорхона — моддӣ. Забон ва адабиёт — маънавӣ.','Меъморӣ ба кадом навъ дохил мешавад?'),
+ Lesson('Функсияҳои фарҳанг','Нақш','Фарҳанг вазифаҳои маърифатӣ, тарбиявӣ, коммуникативӣ, танзимӣ ва ҳифзи меросро иҷро мекунад.','Забон муоширатро таъмин мекунад; анъана таҷрибаро мегузаронад.','Се вазифаи фарҳангро шарҳ деҳ.'),
+ Lesson('Мероси фарҳангӣ','Мерос','Мероси фарҳангӣ ёдгориҳо, анъанаҳо, дониш ва осори таърихии меросмонда мебошад.','Ёдгориҳои таърихӣ ва ҳунарҳои мардумӣ.','Як намунаи мероси фарҳангии Тоҷикистонро шарҳ деҳ.'),
+ Lesson('Фарҳанг ва ҷомеа','Ҷомеа','Арзишҳо рафторро шакл медиҳанд ва ҷомеа фарҳангро тағйир медиҳад.','Меъёрҳои эҳтиром муносибатҳои иҷтимоиро танзим мекунанд.','Мисоли таъсири ҷомеа ба фарҳанг биёр.')
+];
+class LibraryScreen extends StatelessWidget {
+ const LibraryScreen({super.key});
+ @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('BOOKS',style:TextStyle(fontWeight:FontWeight.w900,letterSpacing:2))),body:ListView(padding:const EdgeInsets.all(18),children:[
+ Container(padding:const EdgeInsets.all(22),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF14251F),green]),borderRadius:BorderRadius.circular(24)),child:const Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Icon(Icons.auto_stories,color:Color(0xFFC49A52),size:42),SizedBox(height:16),Text('КИТОБХОНАИ ДОНИШ',style:TextStyle(color:Colors.white,fontSize:23,fontWeight:FontWeight.w900)),Text('Китобҳо • Дарсҳо • Машқҳо • Санҷишҳо',style:TextStyle(color:Colors.white70))])),
+ const SizedBox(height:18),
+ _Tile(icon:Icons.menu_book,title:'Фарҳангшиносӣ',subtitle:'251 саҳифа • хондани офлайн',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const CultureReader()))),
+ _Tile(icon:Icons.code,title:'Python — аз асос то ООП',subtitle:'15 дарс бо мисол ва машқ',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Python',lessons:pythonLessons)))),
+ _Tile(icon:Icons.picture_as_pdf,title:'Кушодани PDF',subtitle:'PDF-ро аз телефон интихоб кун',onTap:()async{final f=await FilePicker.platform.pickFiles(type:FileType.custom,allowedExtensions:['pdf']);if(f!=null&&f.files.single.path!=null&&context.mounted){Navigator.push(context,MaterialPageRoute(builder:(_)=>PdfReader(path:f.files.single.path!,title:f.files.single.name)));}}),
+ const SizedBox(height:10),const Text('ДАРСҲОИ ИЛОВАГӢ',style:TextStyle(color:green,fontWeight:FontWeight.w900)),
+ _Tile(icon:Icons.history_edu,title:'Дарсҳои фарҳангшиносӣ',subtitle:'5 мавзӯи шарҳдодашуда',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Фарҳангшиносӣ',lessons:cultureLessons)))),
+ _Tile(icon:Icons.quiz,title:'Тестҳо ва санҷиши дониш',subtitle:'10 саволи тасодуфӣ • хол',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const QuizScreen()))),
+ _Tile(icon:Icons.school,title:'Алгебра ва физика',subtitle:'Формулаҳо ва шарҳи кӯтоҳ',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const ExtraLessons()))),
+ ]));
 }
-
-class ReaderScreen extends StatefulWidget {
-  const ReaderScreen({super.key});
-
-  @override
-  State<ReaderScreen> createState() => _ReaderScreenState();
+class _Tile extends StatelessWidget {
+ final IconData icon;final String title,subtitle;final VoidCallback onTap;
+ const _Tile({required this.icon,required this.title,required this.subtitle,required this.onTap});
+ @override Widget build(BuildContext context)=>Card(color:Colors.white,child:ListTile(leading:CircleAvatar(backgroundColor:const Color(0xFFE6EDE5),child:Icon(icon,color:green)),title:Text(title,style:const TextStyle(fontWeight:FontWeight.bold)),subtitle:Text(subtitle),trailing:const Icon(Icons.chevron_right),onTap:onTap));
 }
-
-class _ReaderScreenState extends State<ReaderScreen> {
-  static const int totalPages = 251;
-
-  late final PageController controller;
-  int current = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = PageController();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  void goToPage() {
-    final input = TextEditingController(
-      text: '${current + 1}',
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Ба саҳифа гузар'),
-          content: TextField(
-            controller: input,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              hintText: 'Рақами саҳифа',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Бекор'),
-            ),
-            FilledButton(
-              onPressed: () {
-                final page = int.tryParse(input.text);
-
-                if (page != null &&
-                    page >= 1 &&
-                    page <= totalPages) {
-                  Navigator.pop(context);
-
-                  controller.jumpToPage(page - 1);
-                }
-              },
-              child: const Text('Гузар'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Фарҳангшиносӣ'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: 'Ба саҳифа гузар',
-            onPressed: goToPage,
-            icon: const Icon(Icons.find_in_page_rounded),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 14),
-              child: Text('${current + 1}/$totalPages'),
-            ),
-          ),
-        ],
-      ),
-      body: PageView.builder(
-        controller: controller,
-        itemCount: totalPages,
-        onPageChanged: (index) {
-          setState(() {
-            current = index;
-          });
-        },
-        itemBuilder: (_, index) {
-          final asset =
-              'assets/pages/${(index + 1).toString().padLeft(3, '0')}.jpg';
-
-          return Container(
-            color: Colors.white,
-            child: InteractiveViewer(
-              minScale: 1.0,
-              maxScale: 4.0,
-              panEnabled: true,
-              scaleEnabled: true,
-              boundaryMargin: const EdgeInsets.all(20),
-              child: Center(
-                child: Image.asset(
-                  asset,
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, error, stackTrace) {
-                    return const Center(
-                      child: Text(
-                        'Саҳифа ёфт нашуд',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: current == 0
-                      ? null
-                      : () {
-                          controller.previousPage(
-                            duration:
-                                const Duration(milliseconds: 220),
-                            curve: Curves.easeOut,
-                          );
-                        },
-                  icon: const Icon(Icons.chevron_left),
-                  label: const Text('Пешина'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: current == totalPages - 1
-                      ? null
-                      : () {
-                          controller.nextPage(
-                            duration:
-                                const Duration(milliseconds: 220),
-                            curve: Curves.easeOut,
-                          );
-                        },
-                  icon: const Icon(Icons.chevron_right),
-                  label: const Text('Баъдӣ'),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+class LessonList extends StatelessWidget {
+ final String title;final List<Lesson> lessons;
+ const LessonList({super.key,required this.title,required this.lessons});
+ @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text(title)),body:ListView.builder(itemCount:lessons.length,itemBuilder:(context,i){final l=lessons[i];return Card(color:Colors.white,child:ListTile(leading:CircleAvatar(child:Text((i+1).toString())),title:Text(l.title),subtitle:Text(l.group),onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>LessonDetail(lesson:l)))));}));
 }
+class LessonDetail extends StatefulWidget {
+ final Lesson lesson;const LessonDetail({super.key,required this.lesson});
+ @override State<LessonDetail> createState()=>_LessonDetailState();
+}
+class _LessonDetailState extends State<LessonDetail>{
+ final answer=TextEditingController();
+ @override void dispose(){answer.dispose();super.dispose();}
+ @override Widget build(BuildContext context){final l=widget.lesson;return Scaffold(appBar:AppBar(title:Text(l.title)),body:ListView(padding:const EdgeInsets.all(18),children:[
+ Text(l.group.toUpperCase(),style:const TextStyle(color:green,fontWeight:FontWeight.bold)),const SizedBox(height:10),Text(l.title,style:const TextStyle(fontSize:25,fontWeight:FontWeight.w900)),
+ const SizedBox(height:18),const Text('ҚОИДА / ШАРҲ',style:TextStyle(fontWeight:FontWeight.w900,color:green)),Text(l.rule,style:const TextStyle(fontSize:16,height:1.5)),
+ const SizedBox(height:18),const Text('МИСОЛ',style:TextStyle(fontWeight:FontWeight.w900,color:green)),Container(padding:const EdgeInsets.all(14),decoration:BoxDecoration(color:const Color(0xFF14251F),borderRadius:BorderRadius.circular(12)),child:SelectableText(l.example,style:const TextStyle(color:Color(0xFFE9D5A7),fontFamily:'monospace'))),
+ const SizedBox(height:18),const Text('МАШҚ',style:TextStyle(fontWeight:FontWeight.w900,color:green)),Text(l.task),TextField(controller:answer,maxLines:4,decoration:const InputDecoration(hintText:'Ҷавоб ё кодро навис...',border:OutlineInputBorder())),
+ FilledButton(onPressed:()=>showDialog(context:context,builder:(_)=>AlertDialog(title:const Text('Ҷавоб сабт шуд'),content:const Text('Ҷавобро бо қоида ва мисоли дарс муқоиса кун.'),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('Фаҳмо'))])),child:const Text('Санҷидани машқ'))
+ ]));}
+}
+class CultureReader extends StatefulWidget {const CultureReader({super.key});@override State<CultureReader> createState()=>_CultureReaderState();}
+class _CultureReaderState extends State<CultureReader>{
+ late final PageController page;int current=0;static const total=251;
+ @override void initState(){super.initState();page=PageController();}
+ @override void dispose(){page.dispose();super.dispose();}
+ void jump(){final c=TextEditingController(text:(current+1).toString());showDialog(context:context,builder:(_)=>AlertDialog(title:const Text('Рақами саҳифа'),content:TextField(controller:c,keyboardType:TextInputType.number),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('Бекор')),FilledButton(onPressed:(){final n=int.tryParse(c.text);if(n!=null&&n>=1&&n<=total){page.jumpToPage(n-1);Navigator.pop(context);}},child:const Text('Гузар'))]));}
+ @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('Фарҳангшиносӣ'),actions:[IconButton(onPressed:jump,icon:const Icon(Icons.find_in_page)),Padding(padding:const EdgeInsets.only(right:14),child:Center(child:Text((current+1).toString()+'/$total')))]),
+ body:LayoutBuilder(builder:(context,constraints)=>PageView.builder(controller:page,itemCount:total,onPageChanged:(i)=>setState(()=>current=i),itemBuilder:(context,index)=>AnimatedBuilder(animation:page,child:InteractiveViewer(minScale:1,maxScale:4,child:Image.asset('assets/pages/'+(index+1).toString().padLeft(3,'0')+'.jpg',fit:BoxFit.contain,width:constraints.maxWidth,height:constraints.maxHeight,errorBuilder:(_,__,___)=>const Center(child:Text('Саҳифа ёфт нашуд')))),builder:(context,child){final p=page.hasClients?(page.page??page.initialPage.toDouble()):0.0;final d=(p-index).clamp(-1.0,1.0);return Transform(alignment:d>0?Alignment.centerLeft:Alignment.centerRight,transform:Matrix4.identity()..setEntry(3,2,0.0012)..rotateY(d*0.42),child:Opacity(opacity:(1-d.abs()*0.18).clamp(0.0,1.0),child:child));}))),
+ bottomNavigationBar:SafeArea(child:Padding(padding:const EdgeInsets.all(12),child:Row(children:[Expanded(child:OutlinedButton(onPressed:current>0?()=>page.previousPage(duration:const Duration(milliseconds:380),curve:Curves.easeInOutCubic):null,child:const Text('Пешина'))),const SizedBox(width:10),Expanded(child:FilledButton(onPressed:current<total-1?()=>page.nextPage(duration:const Duration(milliseconds:380),curve:Curves.easeInOutCubic):null,child:const Text('Баъдӣ')))]))));
+}
+class Question {final String subject,question,explanation;final List<String> answers;final int correct;const Question(this.subject,this.question,this.answers,this.correct,this.explanation);}
+const questions=<Question>[
+ Question('Python','Кадом калима функсия месозад?',['func','def','function','make'],1,'def калимаи калидӣ барои функсия аст.'),
+ Question('Python','Натиҷаи 17 % 5 чанд аст?',['2','3','3.4','5'],0,'% бақияи тақсимро медиҳад.'),
+ Question('Python','Индекси аввалини list чанд аст?',['1','-1','0','2'],2,'Индекси рӯйхат аз 0 оғоз мешавад.'),
+ Question('Python','Кадом навъ True ё False нигоҳ медорад?',['str','bool','float','list'],1,'bool навъи мантиқӣ аст.'),
+ Question('Python','Барои илова ба охири list кадом метод аст?',['push','add','append','insertEnd'],2,'append() элементро ба охир илова мекунад.'),
+ Question('Python','range(3) кадом қиматҳоро медиҳад?',['1,2,3','0,1,2','0,1,2,3','3'],1,'range(3) аз 0 то 2 аст.'),
+ Question('Python','Кадом оператор баробариро месанҷад?',['=','==','!=','=>'],1,'== муқоиса мекунад, = қимат таъин мекунад.'),
+ Question('Python','Барои коркарди хатогӣ кадом сохтор аст?',['if/else','for/in','try/except','def/return'],2,'try/except хатогиҳоро коркард мекунад.'),
+ Question('Python','Кадом маҷмӯа такрориро нест мекунад?',['list','tuple','set','str'],2,'set танҳо элементҳои нодирро нигоҳ медорад.'),
+ Question('Python','Кадом функсия дарозии сатрро медиҳад?',['size()','len()','countAll()','long()'],1,'len() шумораи элементҳоро медиҳад.'),
+ Question('Фарҳангшиносӣ','Фарҳанг чиро дар бар мегирад?',['Танҳо биноҳо','Арзишҳои моддӣ ва маънавӣ','Танҳо пул','Танҳо қонун'],1,'Фарҳанг ҳам моддӣ ва ҳам маънавӣ мебошад.'),
+ Question('Фарҳангшиносӣ','Кадомаш фарҳанги маънавист?',['Асбоб','Бино','Забон','Либос'],2,'Забон унсури фарҳанги маънавӣ аст.'),
+ Question('Фарҳангшиносӣ','Кадом вазифа таҷрибаро ба наслҳо мегузаронад?',['Ҳифзи мерос','Тиҷорат','Нақлиёт','Истеҳсол'],0,'Фарҳанг мерос ва таҷрибаро нигоҳ медорад.'),
+ Question('Фарҳангшиносӣ','Мероси фарҳангӣ чист?',['Танҳо ашёи нав','Осор, анъана ва донишҳои меросӣ','Танҳо варзиш','Танҳо технология'],1,'Мероси фарҳангӣ аз наслҳо ба наслҳо мегузарад.'),
+ Question('Фарҳангшиносӣ','Фарҳанг ба ҷомеа чӣ таъсир дорад?',['Меъёр ва рафторро шакл медиҳад','Ҳеҷ таъсир надорад','Танҳо ҳаворо тағйир медиҳад','Танҳо иқтисодро ҳисоб мекунад'],0,'Арзишҳо ва меъёрҳои фарҳангӣ рафторро роҳнамоӣ мекунанд.')
+];
+class QuizScreen extends StatefulWidget {const QuizScreen({super.key});@override State<QuizScreen> createState()=>_QuizScreenState();}
+class _QuizScreenState extends State<QuizScreen>{
+ late List<Question> quiz;int index=0,score=0;int? selected;bool answered=false;
+ @override void initState(){super.initState();quiz=List<Question>.of(questions)..shuffle();quiz=quiz.take(10).toList();}
+ void choose(int n){if(answered)return;setState((){selected=n;answered=true;if(n==quiz[index].correct)score++;});}
+ void next(){if(index==quiz.length-1){showDialog(context:context,barrierDismissible:false,builder:(_)=>AlertDialog(title:const Text('Натиҷаи тест'),content:Text('Холи ту: '+score.toString()+' аз '+quiz.length.toString()+'\n'+(score>=8?'Офарин! Донишат хуб аст.':'Мавзӯъҳоро такрор карда, боз санҷ.')),actions:[FilledButton(onPressed:(){Navigator.pop(context);Navigator.pop(context);},child:const Text('Анҷом'))]));}else{setState((){index++;selected=null;answered=false;});}}
+ @override Widget build(BuildContext context){final q=quiz[index];return Scaffold(appBar:AppBar(title:const Text('Тест'),actions:[Center(child:Padding(padding:const EdgeInsets.only(right:16),child:Text((index+1).toString()+'/'+quiz.length.toString())))]),body:ListView(padding:const EdgeInsets.all(18),children:[
+ LinearProgressIndicator(value:(index+1)/quiz.length),const SizedBox(height:20),Text(q.subject.toUpperCase(),style:const TextStyle(color:green,fontWeight:FontWeight.bold)),Text(q.question,style:const TextStyle(fontSize:22,fontWeight:FontWeight.w900)),
+ ...List.generate(q.answers.length,(i){final good=i==q.correct,chosen=i==selected;final bg=answered&&good?const Color(0xFFD9EBDD):answered&&chosen?const Color(0xFFF4D8D5):Colors.white;return Card(color:bg,child:ListTile(leading:CircleAvatar(child:Text(String.fromCharCode(65+i))),title:Text(q.answers[i]),trailing:answered&&good?const Icon(Icons.check_circle,color:green):null,onTap:()=>choose(i)));}),
+ if(answered)...[Text(selected==q.correct?'Дуруст!':'Ҷавоби дуруст: '+q.answers[q.correct],style:const TextStyle(fontWeight:FontWeight.bold,color:green)),Text(q.explanation),FilledButton(onPressed:next,child:Text(index==quiz.length-1?'Натиҷаро дидан':'Саволи навбатӣ'))]
+ ]));}
+}
+class ExtraLessons extends StatelessWidget {const ExtraLessons({super.key});@override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('Алгебра ва физика')),body:ListView(padding:const EdgeInsets.all(16),children:const[
+ _Formula(title:'Детерминанти 2×2',formula:'Δ = ad − bc',note:'|3 2; 1 5| = 3×5 − 2×1 = 13.'),
+ _Formula(title:'Қоидаи Крамер',formula:'x = Δx / Δ\ny = Δy / Δ',note:'Барои система, агар Δ ≠ 0.'),
+ _Formula(title:'Қонуни дуюми Нютон',formula:'F = m × a',note:'F — N, m — kg, a — m/s².'),
+ _Formula(title:'Қувваи соиш',formula:'Fсоиш = μ × N',note:'μ — коэффисиенти соиш; N — қувваи такягоҳ.'),
+ _Formula(title:'Энергияи кинетикӣ',formula:'Eₖ = (m × v²) / 2',note:'m — kg, v — m/s, энергия — J.'),
+ _Formula(title:'Қонуни Архимед',formula:'Fₐ = ρ × g × V',note:'ρ — зичии моеъ, V — ҳаҷми қисми ғӯтида.')
+ ]));}
+class _Formula extends StatelessWidget {final String title,formula,note;const _Formula({required this.title,required this.formula,required this.note});@override Widget build(BuildContext context)=>Card(color:Colors.white,child:Padding(padding:const EdgeInsets.all(16),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(fontWeight:FontWeight.w900,color:green)),SelectableText(formula,style:const TextStyle(fontFamily:'monospace',fontSize:18)),Text(note)])));}
+class PdfReader extends StatelessWidget {final String path,title;const PdfReader({super.key,required this.path,required this.title});@override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text(title,maxLines:1,overflow:TextOverflow.ellipsis)),body:PDFView(filePath:path,enableSwipe:true,autoSpacing:true,pageFling:true,pageSnap:true));}
