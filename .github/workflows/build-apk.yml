@@ -14,32 +14,6 @@ jobs:
           cache: true
       - name: Generate Android project
         run: flutter create --platforms=android --project-name books_learning_app .
-      - name: Show generated SDK configuration
-        run: |
-          echo '--- android/app/build.gradle.kts ---'
-          sed -n '1,100p' android/app/build.gradle.kts
-      - name: Configure Android compile SDK
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          p = Path("android/app/build.gradle.kts")
-          if p.exists():
-              s = p.read_text()
-              old = "compileSdk = flutter.compileSdkVersion"
-              if old not in s:
-                  raise SystemExit("Expected compileSdk declaration not found in build.gradle.kts")
-              p.write_text(s.replace(old, "compileSdk = 36"))
-          else:
-              p = Path("android/app/build.gradle")
-              if not p.exists():
-                  raise SystemExit("Android app Gradle file missing")
-              s = p.read_text()
-              old = "compileSdkVersion flutter.compileSdkVersion"
-              if old not in s:
-                  raise SystemExit("Expected compileSdk declaration not found in build.gradle")
-              p.write_text(s.replace(old, "compileSdkVersion 36"))
-          print(p.read_text())
-          PY
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze Dart code
@@ -47,7 +21,7 @@ jobs:
       - name: Run tests
         run: flutter test
       - name: Build release APK
-        run: flutter build apk --release -Pandroid.compileSdk=36
+        run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
           name: books-learning-apk
