@@ -21,6 +21,7 @@ jobs:
           p = Path("android/app/build.gradle.kts")
           s = p.read_text()
           s = s.replace("compileSdk = flutter.compileSdkVersion", "compileSdk = 36")
+          s = s.replace("compileSdk = 34", "compileSdk = 36")
           p.write_text(s)
           if "compileSdk = 36" not in s:
               raise SystemExit("Could not set Android compile SDK to 36")
