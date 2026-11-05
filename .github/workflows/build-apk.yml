@@ -14,6 +14,10 @@ jobs:
           cache: true
       - name: Generate Android project
         run: flutter create --platforms=android --project-name books_learning_app .
+      - name: Show generated SDK configuration
+        run: |
+          echo '--- android/app/build.gradle.kts ---'
+          sed -n '1,100p' android/app/build.gradle.kts
       - name: Configure Android compile SDK
         run: |
           python3 - <<'PY'
