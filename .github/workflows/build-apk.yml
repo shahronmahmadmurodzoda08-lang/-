@@ -14,22 +14,28 @@ jobs:
           cache: true
       - name: Generate Android project
         run: flutter create --platforms=android --project-name books_learning_app .
-      - name: Set Android compile SDK to 36
+      - name: Configure Android compile SDK
         run: |
-          echo "Generated Android Gradle file:"
-          ls -la android/app
-          if [ -f android/app/build.gradle.kts ]; then
-            sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' android/app/build.gradle.kts
-            grep -n 'compileSdk' android/app/build.gradle.kts
-            grep -q 'compileSdk = 36' android/app/build.gradle.kts
-          elif [ -f android/app/build.gradle ]; then
-            sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 36/' android/app/build.gradle
-            grep -n 'compileSdk' android/app/build.gradle
-            grep -q 'compileSdkVersion 36' android/app/build.gradle
-          else
-            echo "Android app Gradle file was not generated"
-            exit 1
-          fi
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/app/build.gradle.kts")
+          if p.exists():
+              s = p.read_text()
+              old = "compileSdk = flutter.compileSdkVersion"
+              if old not in s:
+                  raise SystemExit("Expected compileSdk declaration not found in build.gradle.kts")
+              p.write_text(s.replace(old, "compileSdk = 36"))
+          else:
+              p = Path("android/app/build.gradle")
+              if not p.exists():
+                  raise SystemExit("Android app Gradle file missing")
+              s = p.read_text()
+              old = "compileSdkVersion flutter.compileSdkVersion"
+              if old not in s:
+                  raise SystemExit("Expected compileSdk declaration not found in build.gradle")
+              p.write_text(s.replace(old, "compileSdkVersion 36"))
+          print(p.read_text())
+          PY
       - name: Install dependencies
         run: flutter pub get
       - name: Analyze Dart code
