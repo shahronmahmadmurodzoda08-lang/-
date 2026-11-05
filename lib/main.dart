@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 void main() => runApp(const BooksApp());
 const green = Color(0xFF244D3A), paper = Color(0xFFF5F0E5);
@@ -124,4 +122,14 @@ class ExtraLessons extends StatelessWidget {const ExtraLessons({super.key});@ove
  _Formula(title:'Қонуни Архимед',formula:'Fₐ = ρ × g × V',note:'ρ — зичии моеъ, V — ҳаҷми қисми ғӯтида.')
  ]));}
 class _Formula extends StatelessWidget {final String title,formula,note;const _Formula({required this.title,required this.formula,required this.note});@override Widget build(BuildContext context)=>Card(color:Colors.white,child:Padding(padding:const EdgeInsets.all(16),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(fontWeight:FontWeight.w900,color:green)),SelectableText(formula,style:const TextStyle(fontFamily:'monospace',fontSize:18)),Text(note)])));}
-class PdfReader extends StatelessWidget {final String path,title;const PdfReader({super.key,required this.path,required this.title});@override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text(title,maxLines:1,overflow:TextOverflow.ellipsis)),body:PDFView(filePath:path,enableSwipe:true,autoSpacing:true,pageFling:true,pageSnap:true));}
+class PdfReader extends StatelessWidget {
+ final String path,title;
+ const PdfReader({super.key,required this.path,required this.title});
+ @override Widget build(BuildContext context)=>Scaffold(
+  appBar:AppBar(title:Text(title)),
+  body:Center(child:Padding(padding:const EdgeInsets.all(24),child:Text(
+   'Барои кушодани PDF ҳоло намоишгари дохилӣ танзим нашудааст. Файл дар китобхона нигоҳ дошта мешавад.',
+   textAlign:TextAlign.center,
+  ))),
+ );
+}
