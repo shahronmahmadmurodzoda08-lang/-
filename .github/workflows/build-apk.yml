@@ -25,15 +25,15 @@ jobs:
           changed = False
           for p in candidates:
               s = p.read_text()
-              s2 = re.sub(r"compileSdk\\s*=\\s*flutter\\.compileSdkVersion", "compileSdk = 36", s)
-              s2 = re.sub(r"compileSdkVersion\\s+flutter\\.compileSdkVersion", "compileSdkVersion 36", s2)
-              s2 = re.sub(r"compileSdk\\s*=\\s*34", "compileSdk = 36", s2)
-              s2 = re.sub(r"compileSdkVersion\\s+34", "compileSdkVersion 36", s2)
+              s2 = re.sub(r"compileSdk\s*=\s*flutter\.compileSdkVersion", "compileSdk = 36", s)
+              s2 = re.sub(r"compileSdkVersion\s+flutter\.compileSdkVersion", "compileSdkVersion 36", s2)
+              s2 = re.sub(r"compileSdk\s*=\s*34", "compileSdk = 36", s2)
+              s2 = re.sub(r"compileSdkVersion\s+34", "compileSdkVersion 36", s2)
               if s2 != s:
                   p.write_text(s2)
                   changed = True
-          combined = "\\n".join(p.read_text() for p in candidates)
-          if not re.search(r"compileSdk\\s*=\\s*36|compileSdkVersion\\s+36", combined):
+          combined = "\n".join(p.read_text() for p in candidates)
+          if not re.search(r"compileSdk\s*=\s*36|compileSdkVersion\s+36", combined):
               raise SystemExit("Could not set compileSdk to 36; inspect generated Gradle syntax")
           print("Android compileSdk configured to 36")
           PY
