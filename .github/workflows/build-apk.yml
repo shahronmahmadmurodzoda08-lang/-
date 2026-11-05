@@ -18,13 +18,24 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          p = Path("android/app/build.gradle.kts")
-          s = p.read_text()
-          s = s.replace("compileSdk = flutter.compileSdkVersion", "compileSdk = 36")
-          s = s.replace("compileSdk = 34", "compileSdk = 36")
-          p.write_text(s)
-          if "compileSdk = 36" not in s:
-              raise SystemExit("Could not set Android compile SDK to 36")
+          import re
+          candidates = list(Path("android/app").glob("build.gradle")) + list(Path("android/app").glob("build.gradle.kts"))
+          if not candidates:
+              raise SystemExit("Android app Gradle file not found")
+          changed = False
+          for p in candidates:
+              s = p.read_text()
+              s2 = re.sub(r"compileSdk\\s*=\\s*flutter\\.compileSdkVersion", "compileSdk = 36", s)
+              s2 = re.sub(r"compileSdkVersion\\s+flutter\\.compileSdkVersion", "compileSdkVersion 36", s2)
+              s2 = re.sub(r"compileSdk\\s*=\\s*34", "compileSdk = 36", s2)
+              s2 = re.sub(r"compileSdkVersion\\s+34", "compileSdkVersion 36", s2)
+              if s2 != s:
+                  p.write_text(s2)
+                  changed = True
+          combined = "\\n".join(p.read_text() for p in candidates)
+          if not re.search(r"compileSdk\\s*=\\s*36|compileSdkVersion\\s+36", combined):
+              raise SystemExit("Could not set compileSdk to 36; inspect generated Gradle syntax")
+          print("Android compileSdk configured to 36")
           PY
       - name: Install dependencies
         run: flutter pub get
