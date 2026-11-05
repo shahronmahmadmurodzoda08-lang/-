@@ -41,7 +41,6 @@ class LibraryScreen extends StatelessWidget {
  const SizedBox(height:18),
  _Tile(icon:Icons.menu_book,title:'Фарҳангшиносӣ',subtitle:'251 саҳифа • хондани офлайн',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const CultureReader()))),
  _Tile(icon:Icons.code,title:'Python — аз асос то ООП',subtitle:'15 дарс бо мисол ва машқ',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Python',lessons:pythonLessons)))),
- _Tile(icon:Icons.picture_as_pdf,title:'Кушодани PDF',subtitle:'PDF-ро аз телефон интихоб кун',onTap:()async{final f=await FilePicker.platform.pickFiles(type:FileType.custom,allowedExtensions:['pdf']);if(f!=null&&f.files.single.path!=null&&context.mounted){Navigator.push(context,MaterialPageRoute(builder:(_)=>PdfReader(path:f.files.single.path!,title:f.files.single.name)));}}),
  const SizedBox(height:10),const Text('ДАРСҲОИ ИЛОВАГӢ',style:TextStyle(color:green,fontWeight:FontWeight.w900)),
  _Tile(icon:Icons.history_edu,title:'Дарсҳои фарҳангшиносӣ',subtitle:'5 мавзӯи шарҳдодашуда',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Фарҳангшиносӣ',lessons:cultureLessons)))),
  _Tile(icon:Icons.quiz,title:'Тестҳо ва санҷиши дониш',subtitle:'10 саволи тасодуфӣ • хол',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const QuizScreen()))),
