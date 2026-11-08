@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdfrx/pdfrx.dart';
 
@@ -91,8 +90,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
  }
  @override Widget build(BuildContext context){
  final filtered=customBooks.where((b)=>('${b.title} ${b.author} ${b.description}').toLowerCase().contains(search.toLowerCase())).toList();
- return Scaffold(appBar:AppBar(leadingWidth:64,leading:Padding(padding:const EdgeInsets.all(8),child:SvgPicture.asset('assets/books_logo.svg')),title:const Text('BOOKS',style:TextStyle(fontWeight:FontWeight.w900,letterSpacing:2)),actions:[IconButton(tooltip:'Илова кардани китоб',onPressed:addBook,icon:const Icon(Icons.add))]),body:ListView(padding:const EdgeInsets.all(18),children:[
- Container(padding:const EdgeInsets.all(22),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF14251F),green]),borderRadius:BorderRadius.circular(24)),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[SizedBox(width:72,height:72,child:SvgPicture.asset('assets/books_logo.svg')),const SizedBox(height:16),const Text('КИТОБХОНАИ ДОНИШ',style:TextStyle(color:Colors.white,fontSize:23,fontWeight:FontWeight.w900)),const Text('Китобҳо • Дарсҳо • Машқҳо • Санҷишҳо',style:TextStyle(color:Colors.white70))])),
+ return Scaffold(appBar:AppBar(leadingWidth:64,leading:Padding(padding:const EdgeInsets.all(8),child:Image.asset('assets/ic_launcher.png',fit:BoxFit.contain)),title:const Text('BOOKS',style:TextStyle(fontWeight:FontWeight.w900,letterSpacing:2)),actions:[IconButton(tooltip:'Илова кардани китоб',onPressed:addBook,icon:const Icon(Icons.add))]),body:ListView(padding:const EdgeInsets.all(18),children:[
+ Container(padding:const EdgeInsets.all(22),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF14251F),green]),borderRadius:BorderRadius.circular(24)),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[SizedBox(width:72,height:72,child:Image.asset('assets/ic_launcher.png',fit:BoxFit.contain)),const SizedBox(height:16),const Text('КИТОБХОНАИ ДОНИШ',style:TextStyle(color:Colors.white,fontSize:23,fontWeight:FontWeight.w900)),const Text('Китобҳо • Дарсҳо • Машқҳо • Санҷишҳо',style:TextStyle(color:Colors.white70))])),
  const SizedBox(height:18),
  TextField(onChanged:(v)=>setState(()=>search=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),hintText:'Ҷустуҷӯи китобҳои иловашуда...',border:OutlineInputBorder())),
  if(customBooks.isNotEmpty)...[const SizedBox(height:12),Text('КИТОБҲОИ ИЛОВАШУДА (${customBooks.length})',style:const TextStyle(color:green,fontWeight:FontWeight.w900)),...filtered.map((b)=>Card(color:Colors.white,child:ListTile(leading:const CircleAvatar(child:Icon(Icons.book)),title:Text(b.title),subtitle:Text([b.kind,b.author,b.description].where((x)=>x.isNotEmpty).join(' • ')),onTap:b.filePath==null?null:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>PdfReader(path:b.filePath!,title:b.title))),trailing:IconButton(tooltip:'Нест кардан',icon:const Icon(Icons.delete_outline),onPressed:()async{setState(()=>customBooks.remove(b));if(b.filePath!=null){try{final f=File(b.filePath!);if(await f.exists())await f.delete();}catch(_){}}await _saveBooks();}))))],
