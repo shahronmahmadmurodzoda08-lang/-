@@ -66,7 +66,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
     TextField(decoration:const InputDecoration(labelText:'Муаллиф'),onChanged:(v)=>author=v),
     TextField(maxLines:3,decoration:const InputDecoration(labelText:'Тавсиф'),onChanged:(v)=>description=v),
     const SizedBox(height:12),
-    DropdownButtonFormField<String>(value:kind,decoration:const InputDecoration(labelText:'Навъи китоб'),items:const [DropdownMenuItem(value:'Китоби матнӣ',child:Text('Китоби матнӣ')),DropdownMenuItem(value:'PDF',child:Text('PDF — интихоб аз телефон')),DropdownMenuItem(value:'Китоби тасвирӣ',child:Text('Китоби тасвирӣ'))],onChanged:(v){if(v!=null)setDialogState(()=>kind=v);})
+    DropdownButtonFormField<String>(initialValue:kind,decoration:const InputDecoration(labelText:'Навъи китоб'),items:const [DropdownMenuItem(value:'Китоби матнӣ',child:Text('Китоби матнӣ')),DropdownMenuItem(value:'PDF',child:Text('PDF — интихоб аз телефон')),DropdownMenuItem(value:'Китоби тасвирӣ',child:Text('Китоби тасвирӣ'))],onChanged:(v){if(v!=null)setDialogState(()=>kind=v);})
    ])),
    actions:[TextButton(onPressed:()=>Navigator.pop(dialogContext),child:const Text('Бекор')),FilledButton(onPressed:(){final t=title.trim();if(t.isNotEmpty){Navigator.pop(dialogContext,BookEntry(title:t,author:author.trim(),description:description.trim(),kind:kind));}},child:const Text('Илова'))]
   )));
@@ -209,6 +209,6 @@ class PdfReader extends StatelessWidget {
  const PdfReader({super.key,required this.path,required this.title});
  @override Widget build(BuildContext context)=>Scaffold(
   appBar:AppBar(title:Text(title)),
-  body:PdfViewer.file(File(path)),
+  body:PdfViewer.file(path),
  );
 }
