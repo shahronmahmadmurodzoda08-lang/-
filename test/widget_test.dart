@@ -27,7 +27,7 @@ void main() {
     await tester.pumpWidget(const BooksApp());
     await tester.tap(find.byTooltip('Илова кардани китоб').first);
     await tester.pumpAndSettle();
-    await tester.enterText(find.widgetWithText(TextField, 'Номи китоб *'), 'Китоби санҷишӣ');
+    await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.tap(find.text('Илова').last);
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsOneWidget);
