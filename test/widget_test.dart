@@ -52,6 +52,8 @@ void main() {
 
   testWidgets('quiz starts with ten questions', (tester) async {
     await tester.pumpWidget(const BooksApp());
+    await tester.ensureVisible(find.text('Тестҳо ва санҷиши дониш'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Тестҳо ва санҷиши дониш'));
     await tester.pumpAndSettle();
     expect(find.text('1/10'), findsOneWidget);
