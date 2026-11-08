@@ -23,6 +23,25 @@ void main() {
     expect(find.textContaining('Дуруст!'), findsOneWidget);
   });
 
+  testWidgets('user can add, search, and delete a custom book', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.tap(find.byTooltip('Илова кардани китоб').first);
+    await tester.pumpAndSettle();
+    await tester.enterText(find.widgetWithText(TextField, 'Номи китоб *'), 'Китоби санҷишӣ');
+    await tester.tap(find.text('Илова').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Китоби санҷишӣ'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).first, 'номаълум');
+    await tester.pumpAndSettle();
+    expect(find.text('Китоби санҷишӣ'), findsNothing);
+    await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
+    await tester.pumpAndSettle();
+    expect(find.text('Китоби санҷишӣ'), findsOneWidget);
+    await tester.tap(find.byTooltip('Нест кардан'));
+    await tester.pumpAndSettle();
+    expect(find.text('Китоби санҷишӣ'), findsNothing);
+  });
+
   testWidgets('culture reader shows page navigation', (tester) async {
     await tester.pumpWidget(const BooksApp());
     await tester.tap(find.text('Фарҳангшиносӣ').last);
