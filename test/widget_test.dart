@@ -42,6 +42,28 @@ void main() {
     expect(find.text('Китоби санҷишӣ'), findsNothing);
   });
 
+
+  testWidgets('programming language paths show Python C++ Java JavaScript', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.ensureVisible(find.text('Омӯзиши забонҳои барномасозӣ'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Омӯзиши забонҳои барномасозӣ'));
+    await tester.pumpAndSettle();
+    expect(find.text('Python'), findsOneWidget);
+    expect(find.text('C++'), findsOneWidget);
+    expect(find.text('Java'), findsOneWidget);
+    expect(find.text('JavaScript'), findsOneWidget);
+  });
+
+  testWidgets('timed quiz displays countdown and color feedback', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.ensureVisible(find.text('Тестҳо ва санҷиши дониш'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Тестҳо ва санҷиши дониш'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('15 сония'), findsOneWidget);
+  });
+
   testWidgets('culture reader shows page navigation', (tester) async {
     await tester.pumpWidget(const BooksApp());
     await tester.tap(find.text('Фарҳангшиносӣ').last);
