@@ -7,7 +7,8 @@ void main() {
     await tester.pumpWidget(const BooksApp());
     expect(find.text('BOOKS'), findsOneWidget);
     expect(find.text('Python — аз асос то ООП'), findsOneWidget);
-    expect(find.text('Тестҳо ва санҷиши дониш'), findsOneWidget);
+    expect(find.text('Фарҳангшиносӣ'), findsOneWidget);
+    expect(find.text('Python — аз асос то ООП'), findsOneWidget);
   });
 
   testWidgets('Python course opens lesson detail and exercise checker', (tester) async {
@@ -37,7 +38,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.delete_outline));
+    await tester.tap(find.byTooltip('Нест кардан'));
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsNothing);
   });
