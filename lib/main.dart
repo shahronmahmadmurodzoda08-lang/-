@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -211,15 +212,6 @@ class TrackLessonsScreen extends StatelessWidget {final ProgrammingTrack track;c
 const cppLessons=<Lesson>[Lesson('Намоиши матн','Асосҳо','cout барои баровардани маълумот истифода мешавад.','#include <iostream>\\nusing namespace std;\\nint main(){ cout << "Salom"; return 0; }','Барномаи чопи номи худро навис.'),Lesson('Ворид кардани адад','Вуруд','cin маълумотро аз клавиатура мегирад.','int x; cin >> x; cout << x;','Ду ададро гирифта ҷамъ кун.'),Lesson('Шарт if','Идоракунӣ','if шарти мантиқиро месанҷад.','if (x > 0) cout << "Musbat";','Мусбат ё манфӣ будани ададро ёб.'),Lesson('Даври for','Даврҳо','for такрори амалҳоро иҷро мекунад.','for(int i=1;i<=5;i++) cout << i;','Ададҳои 1 то 10-ро чоп кун.'),Lesson('Функсия','Функсияҳо','Функсия қисми такроршавандаи код аст.','int add(int a,int b){ return a+b; }','Функсияи square соз.')];
 const javaLessons=<Lesson>[Lesson('Чопи матн','Асосҳо','System.out.println маълумотро чоп мекунад.','class Main { public static void main(String[] args) { System.out.println("Salom"); } }','Номи худро чоп кун.'),Lesson('Тағйирёбандаҳо','Асосҳо','int адади бутун, double касрӣ, String матн.','int age=18; String name="Ali";','Се навъи тағйирёбанда соз.'),Lesson('Шарт if','Идоракунӣ','if шарти мантиқиро месанҷад.','if(age>=18){ System.out.println("Adult"); }','Синну солро санҷ.'),Lesson('Даври for','Даврҳо','for кодро чанд маротиба иҷро мекунад.','for(int i=1;i<=5;i++){ System.out.println(i); }','1 то 10-ро чоп кун.'),Lesson('Методҳо','Функсияҳо','Метод амалро гурӯҳбандӣ мекунад.','static int add(int a,int b){ return a+b; }','Методи square навис.')];
 const jsLessons=<Lesson>[Lesson('Чопи маълумот','Асосҳо','console.log маълумотро дар консол мебарорад.','console.log("Salom");','Номи худро чоп кун.'),Lesson('Тағйирёбандаҳо','Асосҳо','let барои қимати тағйирёбанда ва const барои доимӣ.','let age=18; const name="Ali";','Тағйирёбандаи city соз.'),Lesson('Шарт if','Идоракунӣ','if блокро ҳангоми ҳақ будани шарт иҷро мекунад.','if(age>=18){ console.log("Adult"); }','Ададро мусбат ё манфӣ санҷ.'),Lesson('Даври for','Даврҳо','for амалро такрор мекунад.','for(let i=1;i<=5;i++){ console.log(i); }','1 то 10-ро чоп кун.'),Lesson('Функсияҳо','Функсияҳо','function функсия месозад.','function add(a,b){ return a+b; }','Функсияи square соз.')];
-class ExtraLessons extends StatelessWidget {const ExtraLessons({super.key});@override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('Алгебра ва физика')),body:ListView(padding:const EdgeInsets.all(16),children:const[
- _Formula(title:'Детерминанти 2×2',formula:'Δ = ad − bc',note:'|3 2; 1 5| = 3×5 − 2×1 = 13.'),
- _Formula(title:'Қоидаи Крамер',formula:'x = Δx / Δ\ny = Δy / Δ',note:'Барои система, агар Δ ≠ 0.'),
- _Formula(title:'Қонуни дуюми Нютон',formula:'F = m × a',note:'F — N, m — kg, a — m/s².'),
- _Formula(title:'Қувваи соиш',formula:'Fсоиш = μ × N',note:'μ — коэффисиенти соиш; N — қувваи такягоҳ.'),
- _Formula(title:'Энергияи кинетикӣ',formula:'Eₖ = (m × v²) / 2',note:'m — kg, v — m/s, энергия — J.'),
- _Formula(title:'Қонуни Архимед',formula:'Fₐ = ρ × g × V',note:'ρ — зичии моеъ, V — ҳаҷми қисми ғӯтида.')
- ]));}
-class _Formula extends StatelessWidget {final String title,formula,note;const _Formula({required this.title,required this.formula,required this.note});@override Widget build(BuildContext context)=>Card(color:Colors.white,child:Padding(padding:const EdgeInsets.all(16),child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Text(title,style:const TextStyle(fontWeight:FontWeight.w900,color:green)),SelectableText(formula,style:const TextStyle(fontFamily:'monospace',fontSize:18)),Text(note)])));}
 class PdfReader extends StatelessWidget {
  final String path,title;
  const PdfReader({super.key,required this.path,required this.title});
