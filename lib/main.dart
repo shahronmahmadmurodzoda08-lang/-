@@ -63,13 +63,37 @@ class LessonDetail extends StatefulWidget {
 }
 class _LessonDetailState extends State<LessonDetail>{
  final answer=TextEditingController();
+ String feedback='';
  @override void dispose(){answer.dispose();super.dispose();}
+ String normalize(String value)=>value.toLowerCase().replaceAll(RegExp(r'[^a-zа-яё0-9]+'), '');
+ bool checkAnswer(Lesson lesson,String value){
+  final v=normalize(value); if(v.isEmpty)return false;
+  switch(lesson.title){
+   case 'Python чист?': return v.contains('print') && v.contains('салом');
+   case 'Тағйирёбандаҳо': return v.contains('city') && v.contains('=');
+   case 'Навъҳои маълумот': return ['int','float','str','bool'].every(v.contains);
+   case 'Амалиётҳои математикӣ': return v.contains('1');
+   case 'Шартҳои if / else': return v.contains('if') && (v.contains('>') || v.contains('<'));
+   case 'Даври for': return v.contains('for') && v.contains('range');
+   case 'Даври while': return v.contains('while');
+   case 'Функсияҳо': return v.contains('def') && v.contains('square') && v.contains('return');
+   case 'Рӯйхатҳо (list)': return v.contains('[') && v.contains(']');
+   case 'Tuple ва Set': return v.contains('set');
+   case 'Луғатҳо (dict)': return v.contains('{') && v.contains(':');
+   case 'Сатрҳо (str)': return v.contains('upper');
+   case 'Файлҳо': return v.contains('open') && v.contains('write');
+   case 'Хатогиҳо': return v.contains('try') && v.contains('except');
+   case 'Синфҳо ва объектҳо': return v.contains('class') && v.contains('book');
+   default: return v.length >= 12;
+  }
+ }
  @override Widget build(BuildContext context){final l=widget.lesson;return Scaffold(appBar:AppBar(title:Text(l.title)),body:ListView(padding:const EdgeInsets.all(18),children:[
  Text(l.group.toUpperCase(),style:const TextStyle(color:green,fontWeight:FontWeight.bold)),const SizedBox(height:10),Text(l.title,style:const TextStyle(fontSize:25,fontWeight:FontWeight.w900)),
  const SizedBox(height:18),const Text('ҚОИДА / ШАРҲ',style:TextStyle(fontWeight:FontWeight.w900,color:green)),Text(l.rule,style:const TextStyle(fontSize:16,height:1.5)),
  const SizedBox(height:18),const Text('МИСОЛ',style:TextStyle(fontWeight:FontWeight.w900,color:green)),Container(padding:const EdgeInsets.all(14),decoration:BoxDecoration(color:const Color(0xFF14251F),borderRadius:BorderRadius.circular(12)),child:SelectableText(l.example,style:const TextStyle(color:Color(0xFFE9D5A7),fontFamily:'monospace'))),
  const SizedBox(height:18),const Text('МАШҚ',style:TextStyle(fontWeight:FontWeight.w900,color:green)),Text(l.task),TextField(controller:answer,maxLines:4,decoration:const InputDecoration(hintText:'Ҷавоб ё кодро навис...',border:OutlineInputBorder())),
- FilledButton(onPressed:()=>showDialog(context:context,builder:(_)=>AlertDialog(title:const Text('Ҷавоб сабт шуд'),content:const Text('Ҷавобро бо қоида ва мисоли дарс муқоиса кун.'),actions:[TextButton(onPressed:()=>Navigator.pop(context),child:const Text('Фаҳмо'))])),child:const Text('Санҷидани машқ'))
+ if(feedback.isNotEmpty) Padding(padding:const EdgeInsets.symmetric(vertical:10),child:Text(feedback,style:TextStyle(fontWeight:FontWeight.bold,color:feedback.startsWith('Дуруст')?green:Colors.deepOrange))),
+ FilledButton(onPressed:(){setState(()=>feedback=checkAnswer(l,answer.text)?'Дуруст! Ҷавоб талаботи асосии машқро дорад.':'Ҷавоб нопурра аст. Қоида ва мисолро муқоиса кун.');},child:const Text('Санҷидани машқ'))
  ]));}
 }
 class CultureReader extends StatefulWidget {const CultureReader({super.key});@override State<CultureReader> createState()=>_CultureReaderState();}
