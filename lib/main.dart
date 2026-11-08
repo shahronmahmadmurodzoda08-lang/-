@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdfrx/pdfrx.dart';
 
 void main() => runApp(const BooksApp());
 const green = Color(0xFF244D3A), paper = Color(0xFFF5F0E5);
@@ -40,11 +45,18 @@ class LibraryScreen extends StatefulWidget {
 }
 class BookEntry {
  final String title,author,description,kind;
- const BookEntry({required this.title,required this.author,required this.description,required this.kind});
+ final String? filePath;
+ const BookEntry({required this.title,required this.author,required this.description,required this.kind,this.filePath});
+ Map<String,dynamic> toJson()=>{'title':title,'author':author,'description':description,'kind':kind,'filePath':filePath};
+ factory BookEntry.fromJson(Map<String,dynamic> json)=>BookEntry(title:json['title'] as String,author:(json['author']??'') as String,description:(json['description']??'') as String,kind:(json['kind']??'Китоби матнӣ') as String,filePath:json['filePath'] as String?);
 }
 class _LibraryScreenState extends State<LibraryScreen> {
  final List<BookEntry> customBooks=[];
  String search='';
+ @override void initState(){super.initState();_loadBooks();}
+ Future<File> _libraryFile() async {final dir=await getApplicationDocumentsDirectory();return File('${dir.path}/books_library.json');}
+ Future<void> _loadBooks() async {try{final file=await _libraryFile();if(await file.exists()){final decoded=jsonDecode(await file.readAsString()) as List;final loaded=decoded.map((e)=>BookEntry.fromJson(Map<String,dynamic>.from(e as Map))).toList();if(mounted)setState(()=>customBooks.addAll(loaded));}}catch(_){if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('Рӯйхати китобҳо хонда нашуд.')));}}
+ Future<void> _saveBooks() async {final file=await _libraryFile();await file.writeAsString(jsonEncode(customBooks.map((b)=>b.toJson()).toList()));}
  Future<void> addBook() async {
   final title=TextEditingController(),author=TextEditingController(),description=TextEditingController();
   String kind='Китоби матнӣ';
@@ -55,12 +67,27 @@ class _LibraryScreenState extends State<LibraryScreen> {
     TextField(controller:author,decoration:const InputDecoration(labelText:'Муаллиф')),
     TextField(controller:description,maxLines:3,decoration:const InputDecoration(labelText:'Тавсиф')),
     const SizedBox(height:12),
-    DropdownButtonFormField<String>(value:kind,decoration:const InputDecoration(labelText:'Навъи китоб'),items:const [DropdownMenuItem(value:'Китоби матнӣ',child:Text('Китоби матнӣ')),DropdownMenuItem(value:'PDF',child:Text('PDF (файл баъдтар пайваст мешавад)')),DropdownMenuItem(value:'Китоби тасвирӣ',child:Text('Китоби тасвирӣ'))],onChanged:(v){if(v!=null)setDialogState(()=>kind=v);})
+    DropdownButtonFormField<String>(value:kind,decoration:const InputDecoration(labelText:'Навъи китоб'),items:const [DropdownMenuItem(value:'Китоби матнӣ',child:Text('Китоби матнӣ')),DropdownMenuItem(value:'PDF',child:Text('PDF — интихоб аз телефон')),DropdownMenuItem(value:'Китоби тасвирӣ',child:Text('Китоби тасвирӣ'))],onChanged:(v){if(v!=null)setDialogState(()=>kind=v);})
    ])),
    actions:[TextButton(onPressed:()=>Navigator.pop(dialogContext),child:const Text('Бекор')),FilledButton(onPressed:(){final t=title.text.trim();if(t.isNotEmpty){Navigator.pop(dialogContext,BookEntry(title:t,author:author.text.trim(),description:description.text.trim(),kind:kind));}},child:const Text('Илова'))]
   )));
   title.dispose();author.dispose();description.dispose();
-  if(result!=null&&mounted)setState(()=>customBooks.add(result));
+  if(result==null||!mounted)return;
+  BookEntry saved=result;
+  if(result.kind=='PDF'){
+   try{
+    final picked=await FilePicker.pickFile(type:FileType.custom,allowedExtensions:['pdf']);
+    if(picked==null)return;
+    final bytes=await picked.readAsBytes();
+    final dir=await getApplicationDocumentsDirectory();
+    final safeName='book_${DateTime.now().microsecondsSinceEpoch}.pdf';
+    final file=File('${dir.path}/$safeName');
+    await file.writeAsBytes(bytes,flush:true);
+    saved=BookEntry(title:result.title,author:result.author,description:result.description,kind:'PDF',filePath:file.path);
+   }catch(e){if(mounted)ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('PDF илова нашуд: $e')));return;}
+  }
+  setState(()=>customBooks.add(saved));
+  try{await _saveBooks();}catch(e){if(mounted)ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text('Китоб илова шуд, аммо сабт нашуд: $e')));}
  }
  @override Widget build(BuildContext context){
  final filtered=customBooks.where((b)=>('${b.title} ${b.author} ${b.description}').toLowerCase().contains(search.toLowerCase())).toList();
@@ -68,7 +95,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
  Container(padding:const EdgeInsets.all(22),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF14251F),green]),borderRadius:BorderRadius.circular(24)),child:const Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Icon(Icons.auto_stories,color:Color(0xFFC49A52),size:42),SizedBox(height:16),Text('КИТОБХОНАИ ДОНИШ',style:TextStyle(color:Colors.white,fontSize:23,fontWeight:FontWeight.w900)),Text('Китобҳо • Дарсҳо • Машқҳо • Санҷишҳо',style:TextStyle(color:Colors.white70))])),
  const SizedBox(height:18),
  TextField(onChanged:(v)=>setState(()=>search=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),hintText:'Ҷустуҷӯи китобҳои иловашуда...',border:OutlineInputBorder())),
- if(customBooks.isNotEmpty)...[const SizedBox(height:12),Text('КИТОБҲОИ ИЛОВАШУДА (${customBooks.length})',style:const TextStyle(color:green,fontWeight:FontWeight.w900)),...filtered.map((b)=>Card(color:Colors.white,child:ListTile(leading:const CircleAvatar(child:Icon(Icons.book)),title:Text(b.title),subtitle:Text([b.kind,b.author,b.description].where((x)=>x.isNotEmpty).join(' • ')),trailing:IconButton(tooltip:'Нест кардан',icon:const Icon(Icons.delete_outline),onPressed:()=>setState(()=>customBooks.remove(b))))))],
+ if(customBooks.isNotEmpty)...[const SizedBox(height:12),Text('КИТОБҲОИ ИЛОВАШУДА (${customBooks.length})',style:const TextStyle(color:green,fontWeight:FontWeight.w900)),...filtered.map((b)=>Card(color:Colors.white,child:ListTile(leading:const CircleAvatar(child:Icon(Icons.book)),title:Text(b.title),subtitle:Text([b.kind,b.author,b.description].where((x)=>x.isNotEmpty).join(' • ')),onTap:b.filePath==null?null:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>PdfReader(path:b.filePath!,title:b.title))),trailing:IconButton(tooltip:'Нест кардан',icon:const Icon(Icons.delete_outline),onPressed:()async{setState(()=>customBooks.remove(b));if(b.filePath!=null){try{final f=File(b.filePath!);if(await f.exists())await f.delete();}catch(_){}}await _saveBooks();}))))],
  if(customBooks.isNotEmpty&&filtered.isEmpty) const Padding(padding:EdgeInsets.all(12),child:Text('Китоб ёфт нашуд.')),
  const SizedBox(height:18),
  _Tile(icon:Icons.menu_book,title:'Фарҳангшиносӣ',subtitle:'251 саҳифа • хондани офлайн',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const CultureReader()))),
@@ -184,9 +211,6 @@ class PdfReader extends StatelessWidget {
  const PdfReader({super.key,required this.path,required this.title});
  @override Widget build(BuildContext context)=>Scaffold(
   appBar:AppBar(title:Text(title)),
-  body:Center(child:Padding(padding:const EdgeInsets.all(24),child:Text(
-   'Барои кушодани PDF ҳоло намоишгари дохилӣ танзим нашудааст. Файл дар китобхона нигоҳ дошта мешавад.',
-   textAlign:TextAlign.center,
-  ))),
+  body:PdfViewer.file(File(path)),
  );
 }
