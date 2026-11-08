@@ -8,7 +8,8 @@ void main() {
     expect(find.text('BOOKS'), findsOneWidget);
     expect(find.text('Python — аз асос то ООП'), findsOneWidget);
     expect(find.text('Фарҳангшиносӣ'), findsOneWidget);
-    expect(find.text('Python — аз асос то ООП'), findsOneWidget);
+    expect(find.text('Тестҳо ва санҷиши дониш'), findsOneWidget);
+    expect(find.text('Омӯзиши забонҳои барномасозӣ'), findsOneWidget);
   });
 
   testWidgets('Python course opens lesson detail and exercise checker', (tester) async {
@@ -46,7 +47,7 @@ void main() {
 
   testWidgets('programming language paths show Python C++ Java JavaScript', (tester) async {
     await tester.pumpWidget(const BooksApp());
-    await tester.ensureVisible(find.text('Омӯзиши забонҳои барномасозӣ'));
+    await tester.scrollUntilVisible(find.text('Омӯзиши забонҳои барномасозӣ'), 350, scrollable: find.byType(Scrollable).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Омӯзиши забонҳои барномасозӣ'));
     await tester.pumpAndSettle();
@@ -58,7 +59,7 @@ void main() {
 
   testWidgets('timed quiz displays countdown and color feedback', (tester) async {
     await tester.pumpWidget(const BooksApp());
-    await tester.ensureVisible(find.text('Тестҳо ва санҷиши дониш'));
+    await tester.scrollUntilVisible(find.text('Тестҳо ва санҷиши дониш'), 350, scrollable: find.byType(Scrollable).first);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Тестҳо ва санҷиши дониш'));
     await tester.pumpAndSettle();
