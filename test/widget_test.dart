@@ -37,7 +37,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsOneWidget);
-    await tester.tap(find.byTooltip('Нест кардан'));
+    await tester.tap(find.byIcon(Icons.delete_outline));
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsNothing);
   });
