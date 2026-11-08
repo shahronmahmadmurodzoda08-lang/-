@@ -58,20 +58,18 @@ class _LibraryScreenState extends State<LibraryScreen> {
  Future<void> _loadBooks() async {try{final file=await _libraryFile();if(await file.exists()){final decoded=jsonDecode(await file.readAsString()) as List;final loaded=decoded.map((e)=>BookEntry.fromJson(Map<String,dynamic>.from(e as Map))).toList();if(mounted)setState(()=>customBooks.addAll(loaded));}}catch(_){if(mounted)ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content:Text('Рӯйхати китобҳо хонда нашуд.')));}}
  Future<void> _saveBooks() async {final file=await _libraryFile();await file.writeAsString(jsonEncode(customBooks.map((b)=>b.toJson()).toList()));}
  Future<void> addBook() async {
-  final title=TextEditingController(),author=TextEditingController(),description=TextEditingController();
-  String kind='Китоби матнӣ';
+  String title='',author='',description='',kind='Китоби матнӣ';
   final result=await showDialog<BookEntry>(context:context,builder:(dialogContext)=>StatefulBuilder(builder:(dialogContext,setDialogState)=>AlertDialog(
    title:const Text('Илова кардани китоб'),
    content:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[
-    TextField(controller:title,decoration:const InputDecoration(labelText:'Номи китоб *')),
-    TextField(controller:author,decoration:const InputDecoration(labelText:'Муаллиф')),
-    TextField(controller:description,maxLines:3,decoration:const InputDecoration(labelText:'Тавсиф')),
+    TextField(decoration:const InputDecoration(labelText:'Номи китоб *'),onChanged:(v)=>title=v),
+    TextField(decoration:const InputDecoration(labelText:'Муаллиф'),onChanged:(v)=>author=v),
+    TextField(maxLines:3,decoration:const InputDecoration(labelText:'Тавсиф'),onChanged:(v)=>description=v),
     const SizedBox(height:12),
     DropdownButtonFormField<String>(value:kind,decoration:const InputDecoration(labelText:'Навъи китоб'),items:const [DropdownMenuItem(value:'Китоби матнӣ',child:Text('Китоби матнӣ')),DropdownMenuItem(value:'PDF',child:Text('PDF — интихоб аз телефон')),DropdownMenuItem(value:'Китоби тасвирӣ',child:Text('Китоби тасвирӣ'))],onChanged:(v){if(v!=null)setDialogState(()=>kind=v);})
    ])),
-   actions:[TextButton(onPressed:()=>Navigator.pop(dialogContext),child:const Text('Бекор')),FilledButton(onPressed:(){final t=title.text.trim();if(t.isNotEmpty){Navigator.pop(dialogContext,BookEntry(title:t,author:author.text.trim(),description:description.text.trim(),kind:kind));}},child:const Text('Илова'))]
+   actions:[TextButton(onPressed:()=>Navigator.pop(dialogContext),child:const Text('Бекор')),FilledButton(onPressed:(){final t=title.trim();if(t.isNotEmpty){Navigator.pop(dialogContext,BookEntry(title:t,author:author.trim(),description:description.trim(),kind:kind));}},child:const Text('Илова'))]
   )));
-  title.dispose();author.dispose();description.dispose();
   if(result==null||!mounted)return;
   BookEntry saved=result;
   if(result.kind=='PDF'){
