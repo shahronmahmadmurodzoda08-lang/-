@@ -34,10 +34,42 @@ const cultureLessons=<Lesson>[
  Lesson('Мероси фарҳангӣ','Мерос','Мероси фарҳангӣ ёдгориҳо, анъанаҳо, дониш ва осори таърихии меросмонда мебошад.','Ёдгориҳои таърихӣ ва ҳунарҳои мардумӣ.','Як намунаи мероси фарҳангии Тоҷикистонро шарҳ деҳ.'),
  Lesson('Фарҳанг ва ҷомеа','Ҷомеа','Арзишҳо рафторро шакл медиҳанд ва ҷомеа фарҳангро тағйир медиҳад.','Меъёрҳои эҳтиром муносибатҳои иҷтимоиро танзим мекунанд.','Мисоли таъсири ҷомеа ба фарҳанг биёр.')
 ];
-class LibraryScreen extends StatelessWidget {
+class LibraryScreen extends StatefulWidget {
  const LibraryScreen({super.key});
- @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('BOOKS',style:TextStyle(fontWeight:FontWeight.w900,letterSpacing:2))),body:ListView(padding:const EdgeInsets.all(18),children:[
+ @override State<LibraryScreen> createState()=>_LibraryScreenState();
+}
+class BookEntry {
+ final String title,author,description,kind;
+ const BookEntry({required this.title,required this.author,required this.description,required this.kind});
+}
+class _LibraryScreenState extends State<LibraryScreen> {
+ final List<BookEntry> customBooks=[];
+ String search='';
+ Future<void> addBook() async {
+  final title=TextEditingController(),author=TextEditingController(),description=TextEditingController();
+  String kind='Китоби матнӣ';
+  final result=await showDialog<BookEntry>(context:context,builder:(dialogContext)=>StatefulBuilder(builder:(dialogContext,setDialogState)=>AlertDialog(
+   title:const Text('Илова кардани китоб'),
+   content:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[
+    TextField(controller:title,decoration:const InputDecoration(labelText:'Номи китоб *')),
+    TextField(controller:author,decoration:const InputDecoration(labelText:'Муаллиф')),
+    TextField(controller:description,maxLines:3,decoration:const InputDecoration(labelText:'Тавсиф')),
+    const SizedBox(height:12),
+    DropdownButtonFormField<String>(value:kind,decoration:const InputDecoration(labelText:'Навъи китоб'),items:const [DropdownMenuItem(value:'Китоби матнӣ',child:Text('Китоби матнӣ')),DropdownMenuItem(value:'PDF',child:Text('PDF (файл баъдтар пайваст мешавад)')),DropdownMenuItem(value:'Китоби тасвирӣ',child:Text('Китоби тасвирӣ'))],onChanged:(v){if(v!=null)setDialogState(()=>kind=v);})
+   ])),
+   actions:[TextButton(onPressed:()=>Navigator.pop(dialogContext),child:const Text('Бекор')),FilledButton(onPressed:(){final t=title.text.trim();if(t.isNotEmpty){Navigator.pop(dialogContext,BookEntry(title:t,author:author.text.trim(),description:description.text.trim(),kind:kind));}},child:const Text('Илова'))]
+  )));
+  title.dispose();author.dispose();description.dispose();
+  if(result!=null&&mounted)setState(()=>customBooks.add(result));
+ }
+ @override Widget build(BuildContext context){
+ final filtered=customBooks.where((b)=>('${b.title} ${b.author} ${b.description}').toLowerCase().contains(search.toLowerCase())).toList();
+ return Scaffold(appBar:AppBar(title:const Text('BOOKS',style:TextStyle(fontWeight:FontWeight.w900,letterSpacing:2)),actions:[IconButton(tooltip:'Илова кардани китоб',onPressed:addBook,icon:const Icon(Icons.add))]),body:ListView(padding:const EdgeInsets.all(18),children:[
  Container(padding:const EdgeInsets.all(22),decoration:BoxDecoration(gradient:const LinearGradient(colors:[Color(0xFF14251F),green]),borderRadius:BorderRadius.circular(24)),child:const Column(crossAxisAlignment:CrossAxisAlignment.start,children:[Icon(Icons.auto_stories,color:Color(0xFFC49A52),size:42),SizedBox(height:16),Text('КИТОБХОНАИ ДОНИШ',style:TextStyle(color:Colors.white,fontSize:23,fontWeight:FontWeight.w900)),Text('Китобҳо • Дарсҳо • Машқҳо • Санҷишҳо',style:TextStyle(color:Colors.white70))])),
+ const SizedBox(height:18),
+ TextField(onChanged:(v)=>setState(()=>search=v),decoration:const InputDecoration(prefixIcon:Icon(Icons.search),hintText:'Ҷустуҷӯи китобҳои иловашуда...',border:OutlineInputBorder())),
+ if(customBooks.isNotEmpty)...[const SizedBox(height:12),Text('КИТОБҲОИ ИЛОВАШУДА (${customBooks.length})',style:const TextStyle(color:green,fontWeight:FontWeight.w900)),...filtered.map((b)=>Card(color:Colors.white,child:ListTile(leading:const CircleAvatar(child:Icon(Icons.book)),title:Text(b.title),subtitle:Text([b.kind,b.author,b.description].where((x)=>x.isNotEmpty).join(' • ')),trailing:IconButton(tooltip:'Нест кардан',icon:const Icon(Icons.delete_outline),onPressed:()=>setState(()=>customBooks.remove(b))))))],
+ if(customBooks.isNotEmpty&&filtered.isEmpty) const Padding(padding:EdgeInsets.all(12),child:Text('Китоб ёфт нашуд.')),
  const SizedBox(height:18),
  _Tile(icon:Icons.menu_book,title:'Фарҳангшиносӣ',subtitle:'251 саҳифа • хондани офлайн',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const CultureReader()))),
  _Tile(icon:Icons.code,title:'Python — аз асос то ООП',subtitle:'15 дарс бо мисол ва машқ',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Python',lessons:pythonLessons)))),
@@ -45,7 +77,9 @@ class LibraryScreen extends StatelessWidget {
  _Tile(icon:Icons.history_edu,title:'Дарсҳои фарҳангшиносӣ',subtitle:'5 мавзӯи шарҳдодашуда',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Фарҳангшиносӣ',lessons:cultureLessons)))),
  _Tile(icon:Icons.quiz,title:'Тестҳо ва санҷиши дониш',subtitle:'10 саволи тасодуфӣ • хол',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const QuizScreen()))),
  _Tile(icon:Icons.school,title:'Алгебра ва физика',subtitle:'Формулаҳо ва шарҳи кӯтоҳ',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const ExtraLessons()))),
+ const SizedBox(height:8),OutlinedButton.icon(onPressed:addBook,icon:const Icon(Icons.add),label:const Text('Илова кардани китоб'))
  ]));
+ }
 }
 class _Tile extends StatelessWidget {
  final IconData icon;final String title,subtitle;final VoidCallback onTap;
