@@ -2,11 +2,38 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:books_learning_app/main.dart';
 
 void main() {
-  testWidgets('BOOKS home renders library modules', (tester) async {
+  testWidgets('BOOKS library renders core modules', (tester) async {
     await tester.pumpWidget(const BooksApp());
     expect(find.text('BOOKS'), findsOneWidget);
-    expect(find.text('Фарҳангшиносӣ'), findsOneWidget);
     expect(find.text('Python — аз асос то ООП'), findsOneWidget);
     expect(find.text('Тестҳо ва санҷиши дониш'), findsOneWidget);
+  });
+
+  testWidgets('Python course opens lesson detail and exercise checker', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.tap(find.text('Python — аз асос то ООП'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Python чист?'));
+    await tester.pumpAndSettle();
+    expect(find.text('ҚОИДА / ШАРҲ'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'print("Салом")');
+    await tester.tap(find.text('Санҷидани машқ'));
+    await tester.pump();
+    expect(find.textContaining('Дуруст!'), findsOneWidget);
+  });
+
+  testWidgets('culture reader shows page navigation', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.tap(find.text('Фарҳангшиносӣ').last);
+    await tester.pumpAndSettle();
+    expect(find.text('1/251'), findsOneWidget);
+    expect(find.text('Баъдӣ'), findsOneWidget);
+  });
+
+  testWidgets('quiz starts with ten questions', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.tap(find.text('Тестҳо ва санҷиши дониш'));
+    await tester.pumpAndSettle();
+    expect(find.text('1/10'), findsOneWidget);
   });
 }
