@@ -43,7 +43,7 @@ void main() {
 
   testWidgets('custom books can be added, searched, and deleted', (tester) async {
     await tester.pumpWidget(const BooksApp());
-    await tester.tap(find.byTooltip('Илова кардани китоб').first);
+    await tester.tap(find.byIcon(Icons.add).first);
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.tap(find.text('Илова').last);
