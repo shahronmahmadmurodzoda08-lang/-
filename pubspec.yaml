@@ -1,23 +1,22 @@
-name: farhangshinos_book
-description: Барномаи офлайнии китоби Фарҳангшиносӣ
+name: books_learning_app
+description: Китобхона бо китобҳои Фарҳангшиносӣ ва курси Python
 publish_to: "none"
-version: 1.0.0+1
-
+version: 1.1.0+2
 environment:
   sdk: ">=3.0.0 <4.0.0"
-
 dependencies:
   flutter:
     sdk: flutter
-  photo_view: ^0.15.0
-
+  file_picker: ^13.3.2
+  pdfrx: ^2.12.0
+  path_provider: ^2.1.5
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
-
 flutter:
   uses-material-design: true
   assets:
+    - assets/ic_launcher.png
     - assets/cover.png
     - assets/pages/
