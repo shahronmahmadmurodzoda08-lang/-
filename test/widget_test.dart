@@ -57,7 +57,7 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsOneWidget);
-    await tester.tap(find.byTooltip('Нест кардан'));
+    await tester.tap(find.descendant(of: find.ancestor(of: find.text('Китоби санҷишӣ'), matching: find.byType(Card)), matching: find.byType(IconButton)).last);
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsNothing);
   });
