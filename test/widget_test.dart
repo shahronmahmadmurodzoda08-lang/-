@@ -57,9 +57,9 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsOneWidget);
-    final bookCard = find.ancestor(of: find.text('Китоби санҷишӣ'), matching: find.byType(Card));
-    expect(bookCard, findsOneWidget);
-    await tester.tap(find.descendant(of: bookCard, matching: find.byIcon(Icons.delete_outline)));
+    final deleteButton = find.byKey(const ValueKey('delete-book-Китоби санҷишӣ'));
+    expect(deleteButton, findsOneWidget);
+    await tester.tap(deleteButton);
     await tester.pumpAndSettle();
     expect(find.text('Китоби санҷишӣ'), findsNothing);
   });
