@@ -14,8 +14,8 @@ Future<void> scrollToText(WidgetTester tester, String value) async {
 }
 
 Future<void> openQuiz(WidgetTester tester) async {
-  await scrollToText(tester, 'Тестҳо ва санҷиши дониш');
-  await tester.tap(find.text('Тестҳо ва санҷиши дониш').first);
+  await scrollToText(tester, 'Тестҳо ва имтиҳонҳо');
+  await tester.tap(find.text('Тестҳо ва имтиҳонҳо').first);
   await tester.pumpAndSettle();
 }
 
