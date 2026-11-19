@@ -48,22 +48,21 @@ void main() {
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.tap(find.text('Илова').last);
     await tester.pumpAndSettle();
-    expect(find.text('Китоби санҷишӣ'), findsOneWidget);
+    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
 
     await tester.enterText(find.byType(TextField).first, 'номи дигар');
     await tester.pumpAndSettle();
-    expect(find.text('Китоби санҷишӣ'), findsNothing);
+    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsNothing);
+    expect(find.text('Китоб ёфт нашуд.'), findsOneWidget);
 
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
-    expect(find.text('Китоби санҷишӣ'), findsOneWidget);
-    final deleteButton = find.byKey(const ValueKey('delete-book-Китоби санҷишӣ'));
-    expect(deleteButton, findsOneWidget);
-    await tester.tap(deleteButton);
+    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
+    expect(find.byKey(const ValueKey('delete-book-Китоби санҷишӣ')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('delete-book-Китоби санҷишӣ')));
     await tester.pumpAndSettle();
-    expect(find.text('Китоби санҷишӣ'), findsNothing);
+    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsNothing);
   });
-
   testWidgets('programming language courses list Python C++ Java JavaScript', (tester) async {
     await tester.pumpWidget(const BooksApp());
     await scrollToText(tester, 'Омӯзиши забонҳои барномасозӣ');
