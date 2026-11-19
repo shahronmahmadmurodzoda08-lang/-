@@ -106,7 +106,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
  _Tile(icon:Icons.code,title:'Python — аз асос то ООП',subtitle:'15 дарс бо мисол ва машқ',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Python',lessons:pythonLessons)))),
  const SizedBox(height:10),const Text('ДАРСҲОИ ИЛОВАГӢ',style:TextStyle(color:green,fontWeight:FontWeight.w900)),
  _Tile(icon:Icons.history_edu,title:'Дарсҳои фарҳангшиносӣ',subtitle:'5 мавзӯи шарҳдодашуда',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const LessonList(title:'Фарҳангшиносӣ',lessons:cultureLessons)))),
- _Tile(icon:Icons.quiz,title:'Тестҳо ва санҷиши дониш',subtitle:'10 саволи тасодуфӣ • хол',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const QuizScreen()))),
+ _Tile(icon:Icons.quiz,title:'Тестҳо ва санҷиши дониш',subtitle:'10 саволи тасодуфӣ • хол',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const QuizCatalogScreen()))),
  _Tile(icon:Icons.code,title:'Омӯзиши забонҳои барномасозӣ',subtitle:'Python • C++ • Java • JavaScript',onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>const ProgrammingPathsScreen()))),
  const SizedBox(height:8),OutlinedButton.icon(onPressed:addBook,icon:const Icon(Icons.add),label:const Text('Илова кардани китоб'))
  ]));
@@ -189,15 +189,58 @@ const questions=<Question>[
  Question('Фарҳангшиносӣ','Мероси фарҳангӣ чист?',['Танҳо ашёи нав','Осор, анъана ва донишҳои меросӣ','Танҳо варзиш','Танҳо технология'],1,'Мероси фарҳангӣ аз наслҳо ба наслҳо мегузарад.'),
  Question('Фарҳангшиносӣ','Фарҳанг ба ҷомеа чӣ таъсир дорад?',['Меъёр ва рафторро шакл медиҳад','Ҳеҷ таъсир надорад','Танҳо ҳаворо тағйир медиҳад','Танҳо иқтисодро ҳисоб мекунад'],0,'Арзишҳо ва меъёрҳои фарҳангӣ рафторро роҳнамоӣ мекунанд.')
 ];
-class QuizScreen extends StatefulWidget {const QuizScreen({super.key});@override State<QuizScreen> createState()=>_QuizScreenState();}
+class QuizCatalogScreen extends StatelessWidget {
+ const QuizCatalogScreen({super.key});
+ @override Widget build(BuildContext context) {
+  final groups=<String,List<Question>>{};
+  for(final q in questions){groups.putIfAbsent(q.subject,()=>[]).add(q);}
+  return Scaffold(appBar:AppBar(title:const Text('Интихоби тест')),
+   body:ListView(padding:const EdgeInsets.all(16),children:[
+    const Text('Аввал китоб ё фанро интихоб кун. Тест худкор оғоз намешавад.',style:TextStyle(fontSize:16)),
+    const SizedBox(height:12),
+    ...groups.entries.map((entry)=>Card(color:Colors.white,child:ListTile(
+     leading:const CircleAvatar(child:Icon(Icons.quiz)),
+     title:Text(entry.key,style:const TextStyle(fontWeight:FontWeight.bold)),
+     subtitle:Text('${entry.value.length} савол • интихоб бо хоҳиши худ'),
+     trailing:const Icon(Icons.chevron_right),
+     onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>QuizSetupScreen(subject:entry.key,questionPool:entry.value))),
+    ))),
+    const SizedBox(height:12),
+    Card(color:Colors.white,child:ListTile(leading:const Icon(Icons.shuffle),title:const Text('Тести омехта'),subtitle:const Text('Аз ҳамаи фанҳо — танҳо бо интихоби ту'),onTap:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>QuizSetupScreen(subject:'Тести омехта',questionPool:questions))))),
+   ]));
+ }
+}
+class QuizSetupScreen extends StatefulWidget {
+ final String subject; final List<Question> questionPool;
+ const QuizSetupScreen({super.key,required this.subject,required this.questionPool});
+ @override State<QuizSetupScreen> createState()=>_QuizSetupScreenState();
+}
+class _QuizSetupScreenState extends State<QuizSetupScreen>{
+ int count=10,seconds=15;
+ @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:Text('Танзими тест: ${widget.subject}')),
+  body:ListView(padding:const EdgeInsets.all(18),children:[
+   Text('Саволҳо: ${widget.questionPool.length}',style:const TextStyle(fontWeight:FontWeight.bold)),
+   const SizedBox(height:12),const Text('Шумораи саволҳоро интихоб кун'),
+   Wrap(spacing:8,children:[5,10,15,20].where((v)=>v<=widget.questionPool.length).map((v)=>ChoiceChip(label:Text('$v савол'),selected:count==v,onSelected:(_)=>setState(()=>count=v))).toList()),
+   const SizedBox(height:18),const Text('Вақти ҳар савол'),
+   Wrap(spacing:8,children:[10,15,30,60].map((v)=>ChoiceChip(label:Text('$v сония'),selected:seconds==v,onSelected:(_)=>setState(()=>seconds=v))).toList()),
+   const SizedBox(height:24),
+   FilledButton.icon(onPressed:()=>Navigator.pushReplacement(context,MaterialPageRoute(builder:(_)=>QuizScreen(subject:widget.subject,questionPool:widget.questionPool,questionCount:count,secondsPerQuestion:seconds))),icon:const Icon(Icons.play_arrow),label:const Text('Оғози тест')),
+  ]));
+}
+class QuizScreen extends StatefulWidget {
+ final String subject;final List<Question> questionPool;final int questionCount,secondsPerQuestion;
+ const QuizScreen({super.key,required this.subject,required this.questionPool,this.questionCount=10,this.secondsPerQuestion=15});
+ @override State<QuizScreen> createState()=>_QuizScreenState();
+}
 class _QuizScreenState extends State<QuizScreen>{
- late List<Question> quiz;int index=0,score=0;int? selected;bool answered=false;int seconds=15;Timer? clock;
- @override void initState(){super.initState();quiz=List<Question>.of(questions)..shuffle();quiz=quiz.take(10).toList();_startClock();}
+ late List<Question> quiz;int index=0,score=0;int? selected;bool answered=false;late int seconds;Timer? clock;
+ @override void initState(){super.initState();quiz=List<Question>.of(widget.questionPool)..shuffle();quiz=quiz.take(widget.questionCount.clamp(1,widget.questionPool.length)).toList();seconds=widget.secondsPerQuestion;_startClock();}
  @override void dispose(){clock?.cancel();super.dispose();}
- void _startClock(){clock?.cancel();seconds=15;clock=Timer.periodic(const Duration(seconds:1),(t){if(!mounted||answered){t.cancel();return;}if(seconds<=1){t.cancel();setState(()=>seconds=0);choose(-1);}else{setState(()=>seconds--);}});}
+ void _startClock(){clock?.cancel();seconds=widget.secondsPerQuestion;clock=Timer.periodic(const Duration(seconds:1),(t){if(!mounted||answered){t.cancel();return;}if(seconds<=1){t.cancel();setState(()=>seconds=0);choose(-1);}else{setState(()=>seconds--);}});}
  void choose(int n){if(answered)return;clock?.cancel();setState((){selected=n;answered=true;if(n==quiz[index].correct)score++;});}
- void next(){if(index==quiz.length-1){showDialog(context:context,barrierDismissible:false,builder:(_)=>AlertDialog(title:const Text('Натиҷаи тест'),content:Text('Холи ту: $score аз ${quiz.length}\\n${score>=8?'Офарин! Донишат хуб аст.':'Мавзӯъҳоро такрор карда, боз санҷ.'}'),actions:[FilledButton(onPressed:(){Navigator.pop(context);Navigator.pop(context);},child:const Text('Анҷом'))]));}else{setState(()=>index++);_startClock();}}
- @override Widget build(BuildContext context){final q=quiz[index];return Scaffold(appBar:AppBar(title:const Text('Тест'),actions:[Padding(padding:const EdgeInsets.only(right:16),child:Center(child:Text('${index+1}/${quiz.length}')))]),body:ListView(padding:const EdgeInsets.all(18),children:[
+ void next(){if(index==quiz.length-1){showDialog(context:context,barrierDismissible:false,builder:(_)=>AlertDialog(title:const Text('Натиҷаи тест'),content:Text('Холи ту: $score аз ${quiz.length}'),actions:[FilledButton(onPressed:(){Navigator.pop(context);Navigator.pop(context);},child:const Text('Анҷом'))]));}else{setState(()=>index++);_startClock();}}
+ @override Widget build(BuildContext context){final q=quiz[index];return Scaffold(appBar:AppBar(title:Text(widget.subject),actions:[Padding(padding:const EdgeInsets.only(right:16),child:Center(child:Text('${index+1}/${quiz.length}')))]),body:ListView(padding:const EdgeInsets.all(18),children:[
  LinearProgressIndicator(value:(index+1)/quiz.length),const SizedBox(height:14),
  Container(padding:const EdgeInsets.all(14),decoration:BoxDecoration(color:seconds<=5?const Color(0xFFFFE1E1):const Color(0xFFE5F0E7),borderRadius:BorderRadius.circular(14)),child:Row(children:[Icon(Icons.timer,color:seconds<=5?Colors.red:green),const SizedBox(width:8),Text('Вақти боқимонда: $seconds сония',style:TextStyle(fontWeight:FontWeight.bold,color:seconds<=5?Colors.red:green))])),
  const SizedBox(height:18),Text(q.subject.toUpperCase(),style:const TextStyle(color:green,fontWeight:FontWeight.bold)),Text(q.question,style:const TextStyle(fontSize:22,fontWeight:FontWeight.w900)),
