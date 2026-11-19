@@ -58,6 +58,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsNothing);
   });
+  testWidgets('library search finds built-in Python topics, not only custom books', (tester) async {
+    await tester.pumpWidget(const BooksApp());
+    await tester.enterText(find.byKey(const ValueKey('book-search')), 'Функсияҳо');
+    await tester.pumpAndSettle();
+    expect(find.text('Функсияҳо'), findsWidgets);
+    expect(find.text('Python • мавзӯъ'), findsOneWidget);
+  });
+
   testWidgets('programming language courses list Python C++ Java JavaScript', (tester) async {
     await tester.pumpWidget(const BooksApp());
     await scrollToText(tester, 'Омӯзиши забонҳои барномасозӣ');
