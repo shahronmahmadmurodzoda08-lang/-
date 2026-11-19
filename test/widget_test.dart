@@ -41,7 +41,7 @@ void main() {
     expect(find.textContaining('Дуруст!'), findsOneWidget);
   });
 
-  testWidgets('custom books can be added, searched, and deleted', (tester) async {
+  testWidgets('custom books can be added, searched, and remain in the library', (tester) async {
     await tester.pumpWidget(const BooksApp());
     await tester.tap(find.byIcon(Icons.add).first);
     await tester.pumpAndSettle();
@@ -53,10 +53,8 @@ void main() {
     await tester.enterText(find.byKey(const ValueKey('book-search')), 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
-    expect(find.byKey(const ValueKey('delete-book-Китоби санҷишӣ')), findsOneWidget);
-    await tester.tap(find.byKey(const ValueKey('delete-book-Китоби санҷишӣ')));
-    await tester.pumpAndSettle();
-    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsNothing);
+    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
+    expect(find.byIcon(Icons.delete_outline), findsNothing);
   });
   testWidgets('library search finds built-in Python topics, not only custom books', (tester) async {
     await tester.pumpWidget(const BooksApp());
