@@ -16,6 +16,8 @@ jobs:
         run: flutter create --platforms=android --project-name books_learning_app .
       - name: Install dependencies
         run: flutter pub get
+      - name: Generate app launcher icons
+        run: dart run flutter_launcher_icons
       - name: Analyze Dart code
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
       - name: Run tests
