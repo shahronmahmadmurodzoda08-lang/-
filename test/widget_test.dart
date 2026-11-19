@@ -45,12 +45,12 @@ void main() {
     await tester.pumpWidget(const BooksApp());
     await tester.tap(find.byIcon(Icons.add).first);
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
+    await tester.enterText(find.descendant(of: find.byType(AlertDialog), matching: find.byType(TextField)).first, 'Китоби санҷишӣ');
     await tester.tap(find.text('Илова').last);
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
 
-    await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
+    await tester.enterText(find.byKey(const ValueKey('book-search')), 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
     expect(find.byKey(const ValueKey('delete-book-Китоби санҷишӣ')), findsOneWidget);
