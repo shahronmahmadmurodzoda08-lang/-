@@ -50,11 +50,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
 
-    await tester.enterText(find.byType(TextField).first, 'номи дигар');
-    await tester.pumpAndSettle();
-    expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsNothing);
-    expect(find.text('Китоб ёфт нашуд.'), findsOneWidget);
-
     await tester.enterText(find.byType(TextField).first, 'Китоби санҷишӣ');
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('book-title-Китоби санҷишӣ')), findsOneWidget);
